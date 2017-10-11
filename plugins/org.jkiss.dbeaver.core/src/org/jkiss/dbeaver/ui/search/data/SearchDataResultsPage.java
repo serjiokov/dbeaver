@@ -47,6 +47,12 @@ public class SearchDataResultsPage extends AbstractSearchResultsPage<SearchDataO
     }
 
     @Override
+    public void clearObjects() {
+        super.clearObjects();
+        foundObjects.clear();
+    }
+
+    @Override
     public void populateObjects(DBRProgressMonitor monitor, Collection<SearchDataObject> objects) {
         foundObjects.addAll(objects);
         super.populateObjects(monitor, objects);
