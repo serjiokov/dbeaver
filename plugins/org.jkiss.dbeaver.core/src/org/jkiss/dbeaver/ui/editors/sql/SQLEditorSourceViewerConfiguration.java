@@ -53,7 +53,6 @@ import org.jkiss.dbeaver.ui.editors.sql.indent.SQLCommentAutoIndentStrategy;
 import org.jkiss.dbeaver.ui.editors.sql.indent.SQLStringAutoIndentStrategy;
 import org.jkiss.dbeaver.ui.editors.sql.syntax.*;
 import org.jkiss.dbeaver.ui.editors.sql.util.SQLAnnotationHover;
-import org.jkiss.dbeaver.ui.editors.xml.XMLReconcilingStrategy;
 import org.jkiss.utils.ArrayUtils;
 
 
@@ -384,6 +383,7 @@ public class SQLEditorSourceViewerConfiguration extends TextSourceViewerConfigur
         strategy.setEditor(editor);
 
         MonoReconciler reconciler = new MonoReconciler(strategy, true);
+        reconciler.setDelay(1000);
 
         return reconciler;
     }
