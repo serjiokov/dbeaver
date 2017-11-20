@@ -45,6 +45,7 @@ public abstract class DataTransferHandler extends AbstractHandler {
         IStructuredSelection ss = (IStructuredSelection)selection;
         final List<IDataTransferProducer> producers = new ArrayList<>();
         final List<IDataTransferConsumer> consumers = new ArrayList<>();
+       
         for (Iterator<?> iter = ss.iterator(); iter.hasNext(); ) {
             Object object = iter.next();
 
@@ -56,16 +57,20 @@ public abstract class DataTransferHandler extends AbstractHandler {
             }
         }
 
-        if (!consumers.isEmpty()) {
-            // We need to choose producer for consumers
-            for (IDataTransferConsumer consumer : consumers) {
-                IDataTransferProducer producer = chooseProducer(event, consumer);
-                if (producer == null) {
-                    return null;
-                }
-                producers.add(producer);
-            }
-        }
+        System.out.println("Consumers size: " + consumers.size()  );
+        System.out.println("Producer size: " + producers.size()  );
+        
+        
+//        if (!consumers.isEmpty()) {
+//            // We need to choose producer for consumers
+//            for (IDataTransferConsumer consumer : consumers) {
+//                IDataTransferProducer producer = chooseProducer(event, consumer);
+//                if (producer == null) {
+//                    return null;
+//                }
+//                producers.add(producer);
+//            }
+//        }
 
         // Run transfer wizard
         if (!producers.isEmpty() || !consumers.isEmpty()) {

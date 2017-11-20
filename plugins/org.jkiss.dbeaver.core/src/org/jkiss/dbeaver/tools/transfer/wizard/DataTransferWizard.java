@@ -43,6 +43,7 @@ public class DataTransferWizard extends Wizard implements IExportWizard {
     private DataTransferSettings settings;
 
     public DataTransferWizard(@Nullable IDataTransferProducer[] producers, @Nullable IDataTransferConsumer[] consumers) {
+    		System.out.println("Wizard producers "+producers.length + "   consumers "+consumers.length);
         this.settings = new DataTransferSettings(producers, consumers);
         loadSettings();
     }
@@ -68,9 +69,16 @@ public class DataTransferWizard extends Wizard implements IExportWizard {
     @Override
     public void addPages() {
         super.addPages();
+        
         if (settings.isConsumerOptional()) {
-            addPage(new DataTransferPagePipes());
+            addPage(new DataTransferPagePipes(true));
         }
+        else {
+        	    addPage(new DataTransferPagePipes(false));
+        }
+        
+        
+        //addPage(new DataTransferPagePipes());
         settings.addWizardPages(this);
         addPage(new DataTransferPageFinal());
     }

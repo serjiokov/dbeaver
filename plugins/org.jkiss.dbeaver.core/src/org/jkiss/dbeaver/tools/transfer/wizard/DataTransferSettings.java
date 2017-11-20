@@ -136,11 +136,13 @@ public class DataTransferSettings {
             nodes.addAll(registry.getAvailableConsumers(objectTypes));
         } else {
             for (IDataTransferConsumer target : consumers) {
-                DataTransferNodeDescriptor node = registry.getNodeByType(target.getClass());
-                if (node != null && !nodes.contains(node)) {
-                    nodes.add(node);
-                    this.consumer = node;
-                }
+                //DataTransferNodeDescriptor node = registry.getNodeByType(target.getClass());
+            	List<DataTransferNodeDescriptor> lstProducers = registry.getProducersNodes();
+            	nodes.addAll(lstProducers);
+//                if (node != null && !nodes.contains(node)) {
+//                    nodes.add(node);
+//                    this.consumer = node;
+//                }
             }
         }
         for (DataTransferNodeDescriptor node : nodes) {

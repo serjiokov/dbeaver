@@ -41,6 +41,7 @@ import java.util.List;
 class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
 
     private TableViewer consumersTable;
+    private boolean loadConsumesStrategy = true;
 
     private static class TransferTarget {
         DataTransferNodeDescriptor consumer;
@@ -53,11 +54,12 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
         }
     }
 
-    DataTransferPagePipes() {
+    DataTransferPagePipes(boolean loadConsumesStrategy) {
         super(CoreMessages.data_transfer_wizard_init_name);
         setTitle(CoreMessages.data_transfer_wizard_init_title);
         setDescription(CoreMessages.data_transfer_wizard_init_description);
         setPageComplete(false);
+        this.loadConsumesStrategy = loadConsumesStrategy;
     }
 
     @Override
@@ -121,8 +123,12 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
             columnDesc.setLabelProvider(labelProvider);
             columnDesc.getColumn().setText(CoreMessages.data_transfer_wizard_init_column_description);
         }
-
-        loadConsumers();
+        if(loadConsumesStrategy) {
+        		loadConsumers();
+        }
+        else {
+        		loadProducers();
+        }
 
         consumersTable.getTable().addSelectionListener(new SelectionListener() {
             @Override
@@ -190,6 +196,26 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
             } else {
                 for (DataTransferProcessorDescriptor processor : processors) {
                     transferTargets.add(new TransferTarget(consumer, processor));
+                }
+            }
+        }
+        consumersTable.setInput(transferTargets);
+    }
+    
+    private void loadProducers() {
+        DataTransferSettings settings = getWizard().getSettings();
+        Collection<Class<?>> objectTypes = settings.getObjectTypes();
+
+        List<TransferTarget> transferTargets = new ArrayList<>();
+        for (DataTransferNodeDescriptor producer : DataTransferRegistry.getInstance().getProducersNodes()) {
+            
+        		Collection<DataTransferProcessorDescriptor> processors = producer.getAvailableProcessors(objectTypes);
+            
+            if (CommonUtils.isEmpty(processors)) {
+                transferTargets.add(new TransferTarget(producer, null));
+            } else {
+                for (DataTransferProcessorDescriptor processor : processors) {
+                    transferTargets.add(new TransferTarget(producer, processor));
                 }
             }
         }

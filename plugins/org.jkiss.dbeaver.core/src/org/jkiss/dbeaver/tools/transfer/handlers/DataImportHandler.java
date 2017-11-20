@@ -55,24 +55,29 @@ public class DataImportHandler extends DataTransferHandler implements IElementUp
     @Override
     protected IDataTransferProducer chooseProducer(ExecutionEvent event, IDataTransferConsumer consumer)
     {
-        final DBNModel navigatorModel = DBeaverCore.getInstance().getNavigatorModel();
-        final DBNNode rootNode = DBeaverCore.getInstance().getLiveProjects().size() == 1 ?
-            navigatorModel.getRoot().getProject(DBeaverCore.getInstance().getProjectRegistry().getActiveProject()) : navigatorModel.getRoot();
-        DBNNode node = BrowseObjectDialog.selectObject(
-            HandlerUtil.getActiveShell(event),
-            "Select source container for '" + consumer.getTargetName() + "'",
-            rootNode,
-            null,
-            new Class[] {DBSObjectContainer.class, DBSDataContainer.class},
-            new Class[] {DBSDataContainer.class});
-        if (node instanceof DBNDatabaseNode) {
-            DBSObject object = ((DBNDatabaseNode) node).getObject();
-            if (object instanceof DBSDataContainer) {
-                return new DatabaseTransferProducer((DBSDataContainer) object);
-            }
-        }
-        return null;
-    }
+  
+    	
+    	System.out.println( "--- Choose Produser ---");
+    	System.out.println(event.toString());
+    	
+//        final DBNModel navigatorModel = DBeaverCore.getInstance().getNavigatorModel();
+//        final DBNNode rootNode = DBeaverCore.getInstance().getLiveProjects().size() == 1 ?
+//            navigatorModel.getRoot().getProject(DBeaverCore.getInstance().getProjectRegistry().getActiveProject()) : navigatorModel.getRoot();
+//        DBNNode node = BrowseObjectDialog.selectObject(
+//            HandlerUtil.getActiveShell(event),
+//            "Select source container for '" + consumer.getTargetName() + "'",
+//            rootNode,
+//            null,
+//            new Class[] {DBSObjectContainer.class, DBSDataContainer.class},
+//            new Class[] {DBSDataContainer.class});
+//        if (node instanceof DBNDatabaseNode) {
+//            DBSObject object = ((DBNDatabaseNode) node).getObject();
+//            if (object instanceof DBSDataContainer) {
+//                return new DatabaseTransferProducer((DBSDataContainer) object);
+//            }
+//        }
+       return null;
+   }
 
     @Override
     public void updateElement(UIElement element, Map parameters)

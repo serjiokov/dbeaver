@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.jkiss.dbeaver.registry.RegistryConstants;
+import org.jkiss.dbeaver.tools.transfer.IDataTransferConsumer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferNode;
+import org.jkiss.dbeaver.tools.transfer.IDataTransferProducer;
+import org.jkiss.dbeaver.tools.transfer.IDataTransferSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +54,8 @@ public class DataTransferRegistry {
         // Load datasource providers from external plugins
         IConfigurationElement[] extElements = registry.getConfigurationElementsFor(EXTENSION_ID);
         for (IConfigurationElement ext : extElements) {
-            if (RegistryConstants.TAG_NODE.equals(ext.getName())) {
+            String name = ext.getName();
+			if (RegistryConstants.TAG_NODE.equals(name)) {
                 nodes.add(new DataTransferNodeDescriptor(ext));
             }
         }
@@ -86,13 +90,14 @@ public class DataTransferRegistry {
     public DataTransferNodeDescriptor getNodeByType(Class<? extends IDataTransferNode> type)
     {
         for (DataTransferNodeDescriptor node : nodes) {
-            if (node.getNodeClass().equals(type)) {
+            Class<? extends IDataTransferNode> nodeClass = node.getNodeClass();
+			if (nodeClass.equals(type)) {
                 return node;
             }
         }
         return null;
     }
-
+    
     public DataTransferNodeDescriptor getNodeById(String id)
     {
         for (DataTransferNodeDescriptor node : nodes) {
@@ -102,4 +107,27 @@ public class DataTransferRegistry {
         }
         return null;
     }
+    
+	// SK
+	public List<DataTransferNodeDescriptor> getConsumersNodes() {
+		List<DataTransferNodeDescriptor> lstResultNodes = new ArrayList<>();
+		for (DataTransferNodeDescriptor iter : nodes) {
+			if( iter.getNodeType() == DataTransferNodeDescriptor.NodeType.CONSUMER) {
+				lstResultNodes.add(iter);
+			}
+		}
+		return lstResultNodes;
+	}
+	
+	//SK
+	public List<DataTransferNodeDescriptor> getProducersNodes() {
+		List<DataTransferNodeDescriptor> lstResultNodes = new ArrayList<>();
+		for (DataTransferNodeDescriptor iter : nodes) {
+			if( iter.getNodeType() == DataTransferNodeDescriptor.NodeType.PRODUCER) {	
+				lstResultNodes.add(iter);
+			}
+		}
+		return lstResultNodes;
+	}
+	
 }
