@@ -3299,7 +3299,7 @@
               icon="icons/misc/csv.png"
               label="%dataTransfer.producer.csv.name"
               description="%dataTransfer.producer.csv.description"
-              settings="org.jkiss.dbeaver.tools.transfer.database.DatabaseConsumerSettings">
+              settings="org.jkiss.dbeaver.tools.transfer.stream.csv.CsvDataTransferSettings">
             <sourceType type="org.jkiss.dbeaver.tools.transfer.stream.csv.CsvInputDataSource"/>
             <propertyGroup label="%dataTransfer.processor.csv.propertyGroup.general.label">
                     <property id="extension" label="%dataTransfer.processor.csv.property.extension.label" defaultValue="csv"/>
