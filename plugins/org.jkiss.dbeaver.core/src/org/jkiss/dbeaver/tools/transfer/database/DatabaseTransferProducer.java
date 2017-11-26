@@ -44,6 +44,9 @@ public class DatabaseTransferProducer implements IDataTransferProducer<DatabaseP
     @Nullable
     private DBDDataFilter dataFilter;
 
+    public DatabaseTransferProducer() {
+	}
+    
     public DatabaseTransferProducer(@NotNull DBSDataContainer dataContainer)
     {
         this.dataContainer = dataContainer;

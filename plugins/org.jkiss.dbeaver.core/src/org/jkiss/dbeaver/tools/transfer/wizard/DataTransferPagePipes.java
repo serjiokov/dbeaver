@@ -125,39 +125,68 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
         }
         if(loadConsumesStrategy) {
         		loadConsumers();
+        		consumersTable.getTable().addSelectionListener(new SelectionListener() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+                        final IStructuredSelection selection = (IStructuredSelection) consumersTable.getSelection();
+                        TransferTarget target;
+                        if (!selection.isEmpty()) {
+                            target = (TransferTarget) selection.getFirstElement();
+                        } else {
+                            target = null;
+                        }
+                        if (target == null) {
+                            getWizard().getSettings().selectConsumer(null, null);
+                        } else {
+                            getWizard().getSettings().selectConsumer(target.consumer, target.processor);
+                        }
+                        updatePageCompletion();
+                    }
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e)
+                    {
+                        widgetSelected(e);
+                        if (isPageComplete()) {
+                            getWizard().getContainer().showPage(getWizard().getNextPage(DataTransferPagePipes.this));
+                        }
+                    }
+                });
         }
         else {
         		loadProducers();
+        		consumersTable.getTable().addSelectionListener(new SelectionListener() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+                        final IStructuredSelection selection = (IStructuredSelection) consumersTable.getSelection();
+                        TransferTarget target;
+                        if (!selection.isEmpty()) {
+                            target = (TransferTarget) selection.getFirstElement();
+                        } else {
+                            target = null;
+                        }
+                        if (target == null) {
+                            getWizard().getSettings().selectConsumer(null, null);
+                        } else {
+                            getWizard().getSettings().selectConsumer(target.consumer, target.processor);
+                        }
+                        updatePageCompletion();
+                    }
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e)
+                    {
+                        widgetSelected(e);
+                        if (isPageComplete()) {
+                            getWizard().getContainer().showPage(getWizard().getNextPage(DataTransferPagePipes.this));
+                        }
+                    }
+                });
         }
 
-        consumersTable.getTable().addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                final IStructuredSelection selection = (IStructuredSelection) consumersTable.getSelection();
-                TransferTarget target;
-                if (!selection.isEmpty()) {
-                    target = (TransferTarget) selection.getFirstElement();
-                } else {
-                    target = null;
-                }
-                if (target == null) {
-                    getWizard().getSettings().selectConsumer(null, null);
-                } else {
-                    getWizard().getSettings().selectConsumer(target.consumer, target.processor);
-                }
-                updatePageCompletion();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                widgetSelected(e);
-                if (isPageComplete()) {
-                    getWizard().getContainer().showPage(getWizard().getNextPage(DataTransferPagePipes.this));
-                }
-            }
-        });
+        
         consumersTable.getTable().addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e)
@@ -169,17 +198,33 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
         });
         setControl(composite);
 
-        DataTransferNodeDescriptor consumer = getWizard().getSettings().getConsumer();
-        DataTransferProcessorDescriptor processor = getWizard().getSettings().getProcessor();
-        if (consumer != null) {
-            Collection<TransferTarget> targets = (Collection<TransferTarget>) consumersTable.getInput();
-            for (TransferTarget target : targets) {
-                if (target.consumer == consumer && target.processor == processor) {
-                    consumersTable.setSelection(new StructuredSelection(target));
-                    break;
-                }
-            }
-        }
+		if (loadConsumesStrategy) {
+			DataTransferNodeDescriptor consumer = getWizard().getSettings().getConsumer();
+			DataTransferProcessorDescriptor processor = getWizard().getSettings().getProcessor();
+			if (consumer != null) {
+				Collection<TransferTarget> targets = (Collection<TransferTarget>) consumersTable.getInput();
+				for (TransferTarget target : targets) {
+					if (target.consumer == consumer && target.processor == processor) {
+						consumersTable.setSelection(new StructuredSelection(target));
+						break;
+					}
+				}
+			}
+		}
+		else {
+			DataTransferNodeDescriptor producers = getWizard().getSettings().getProducer();
+			DataTransferProcessorDescriptor processor = getWizard().getSettings().getProcessor();
+			
+			if (producers != null) {
+				Collection<TransferTarget> targets = (Collection<TransferTarget>) consumersTable.getInput();
+				for (TransferTarget target : targets) {
+					if (target.consumer == producers && target.processor == processor) {
+						consumersTable.setSelection(new StructuredSelection(target));
+						break;
+					}
+				}
+			}
+		}
         updatePageCompletion();
     }
 

@@ -16,6 +16,8 @@
  */
 package org.jkiss.dbeaver.tools.transfer.wizard;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,13 +29,13 @@ import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.core.CoreMessages;
 import org.jkiss.dbeaver.model.DBPEvaluationContext;
 import org.jkiss.dbeaver.model.DBUtils;
+import org.jkiss.dbeaver.tools.transfer.IDataTransferNode;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferProcessor;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferSettings;
+import org.jkiss.dbeaver.tools.transfer.handlers.DataTransferStrategy;
 import org.jkiss.dbeaver.ui.DBeaverIcons;
 import org.jkiss.dbeaver.ui.UIUtils;
 import org.jkiss.dbeaver.ui.dialogs.ActiveWizardPage;
-
-import java.util.List;
 
 class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
 
@@ -41,13 +43,14 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
 
     private Table resultTable;
     private boolean activated = false;
-
+ 
     DataTransferPageFinal() {
         super(CoreMessages.data_transfer_wizard_final_name);
         setTitle(CoreMessages.data_transfer_wizard_final_title);
         setDescription(CoreMessages.data_transfer_wizard_final_description);
         setPageComplete(false);
     }
+    
 
     @Override
     public void createControl(Composite parent) {
@@ -84,7 +87,15 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
         DataTransferSettings settings = getWizard().getSettings();
         List<DataTransferPipe> dataPipes = settings.getDataPipes();
         for (DataTransferPipe pipe : dataPipes) {
-            IDataTransferSettings consumerSettings = settings.getNodeSettings(pipe.getConsumer());
+        		
+        		IDataTransferNode typeObject = null;
+        		if(settings.getTransferStrategy() == DataTransferStrategy.EXPORT) {
+        			typeObject = pipe.getConsumer();
+        		}
+        		else if (settings.getTransferStrategy() == DataTransferStrategy.IMPORT) {
+        			typeObject = pipe.getProducer();
+        		}
+            IDataTransferSettings consumerSettings = settings.getNodeSettings(typeObject);
             IDataTransferProcessor processor = null;
             if (settings.getProcessor() != null) {
                 // Processor is optional
@@ -95,24 +106,39 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
                     continue;
                 }
             }
-            pipe.getConsumer().initTransfer(
-                pipe.getProducer().getSourceObject(),
-                consumerSettings,
-                processor,
-                processor == null ?
-                    null :
-                    settings.getProcessorProperties());
-            TableItem item = new TableItem(resultTable, SWT.NONE);
-            item.setText(0, DBUtils.getObjectFullName(pipe.getProducer().getSourceObject(), DBPEvaluationContext.UI));
-            if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
-                item.setImage(0, DBeaverIcons.getImage(settings.getProducer().getIcon()));
-            }
-            item.setText(1, pipe.getConsumer().getTargetName());
-            if (settings.getProcessor() != null && settings.getProcessor().getIcon() != null) {
-                item.setImage(1, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
-            } else if (settings.getConsumer() != null && settings.getConsumer().getIcon() != null) {
-                item.setImage(1, DBeaverIcons.getImage(settings.getConsumer().getIcon()));
-            }
+          
+			if (settings.getTransferStrategy() == DataTransferStrategy.EXPORT) {
+				pipe.getConsumer().initTransfer(pipe.getProducer().getSourceObject(), consumerSettings, processor,
+						processor == null ? null : settings.getProcessorProperties());
+				TableItem item = new TableItem(resultTable, SWT.NONE);
+				item.setText(0,
+						DBUtils.getObjectFullName(pipe.getProducer().getSourceObject(), DBPEvaluationContext.UI));
+				if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
+					item.setImage(0, DBeaverIcons.getImage(settings.getProducer().getIcon()));
+				}
+				item.setText(1, pipe.getConsumer().getTargetName());
+				if (settings.getProcessor() != null && settings.getProcessor().getIcon() != null) {
+					item.setImage(1, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
+				} else if (settings.getConsumer() != null && settings.getConsumer().getIcon() != null) {
+					item.setImage(1, DBeaverIcons.getImage(settings.getConsumer().getIcon()));
+				}
+			}
+			else if (settings.getTransferStrategy() == DataTransferStrategy.IMPORT) {
+				
+				TableItem item = new TableItem(resultTable, SWT.NONE);
+	           // item.setText(0, DBUtils.getObjectFullName(pipe.getProducer().getSourceObject(), DBPEvaluationContext.UI));
+	            if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
+	                item.setImage(0, DBeaverIcons.getImage(settings.getProducer().getIcon()));
+	            }
+	            //item.setText(1, pipe.getConsumer().getTargetName());
+	            if (settings.getProcessor() != null && settings.getProcessor().getIcon() != null) {
+	                item.setImage(1, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
+	            } 
+//	            else if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
+//	                item.setImage(1, DBeaverIcons.getImage(settings.getProducer().getIcon()));
+//	            }
+			}
+            
         }
         activated = true;
         UIUtils.packColumns(resultTable, true);

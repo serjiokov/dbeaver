@@ -3294,24 +3294,28 @@
         </node>
         
         <node type="producer"
-              id="stream_csv"
+              id="producer_csv"
               class="org.jkiss.dbeaver.tools.transfer.stream.csv.CsvStreamTransferProducer"
               icon="icons/misc/csv.png"
               label="%dataTransfer.producer.csv.name"
               description="%dataTransfer.producer.csv.description"
               settings="org.jkiss.dbeaver.tools.transfer.stream.csv.CsvDataTransferSettings">
             <sourceType type="org.jkiss.dbeaver.tools.transfer.stream.csv.CsvInputDataSource"/>
-            <propertyGroup label="%dataTransfer.processor.csv.propertyGroup.general.label">
+             <processor
+                    id="producer_stream.csv"
+                    class="org.jkiss.dbeaver.tools.transfer.stream.impl.DataExporterCSV"
+                    description="%dataTransfer.processor.csv.description"
+                    icon="icons/misc/csv.png"
+                    label="%dataTransfer.processor.csv.name">
+                <propertyGroup label="%dataTransfer.processor.csv.propertyGroup.general.label">
                     <property id="extension" label="%dataTransfer.processor.csv.property.extension.label" defaultValue="csv"/>
                     <property id="delimiter" label="%dataTransfer.processor.csv.property.delimiter.name" type="string" description="%dataTransfer.processor.csv.property.delimiter.description" defaultValue="," required="true"/>
                     <property id="header" label="%dataTransfer.processor.csv.property.header.name" type="string" description="%dataTransfer.processor.csv.property.header.description" defaultValue="top" required="true" validValues="none,top,bottom,both"/>
                     <property id="escape" label="%dataTransfer.processor.csv.property.escape.name" type="string" description="%dataTransfer.processor.csv.property.escape.description" defaultValue="quotes" required="true" validValues="quotes,escape"/>
                     <property id="quoteChar" label="%dataTransfer.processor.csv.property.quoteChar.name" type="string" description="%dataTransfer.processor.csv.property.quoteChar.description" defaultValue="&quot;" required="false"/>
                     <property id="nullString" label="%dataTransfer.processor.csv.property.nullString.name" type="string" description="%dataTransfer.processor.csv.property.nullString.description" defaultValue="" required="false"/>
-             </propertyGroup>
-                
-            <!--page class="org.jkiss.dbeaver.tools.transfer.database.DatabaseConsumerPageMapping"/>
-            <page class="org.jkiss.dbeaver.tools.transfer.database.DatabaseConsumerPageLoadSettings"/-->
+                </propertyGroup>
+            </processor>
         </node>
 
         <node type="consumer"

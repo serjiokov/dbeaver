@@ -78,7 +78,7 @@ public abstract class DataTransferHandler extends AbstractHandler {
                 workbenchWindow,
                 new DataTransferWizard(
                     producers.toArray(new IDataTransferProducer[producers.size()]),
-                    consumers.toArray(new IDataTransferConsumer[consumers.size()])));
+                    consumers.toArray(new IDataTransferConsumer[consumers.size()]), getTransferStrategy()));
             dialog.open();
         }
 
@@ -91,4 +91,6 @@ public abstract class DataTransferHandler extends AbstractHandler {
     }
 
     protected abstract IDataTransferNode adaptTransferNode(Object object);
+    
+    protected abstract int getTransferStrategy();
 }

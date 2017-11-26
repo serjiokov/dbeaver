@@ -32,6 +32,7 @@ import org.jkiss.dbeaver.runtime.ui.DBUserInterface;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferConsumer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferProducer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferSettings;
+import org.jkiss.dbeaver.tools.transfer.handlers.DataTransferStrategy;
 import org.jkiss.dbeaver.ui.UIUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -39,18 +40,31 @@ import java.lang.reflect.InvocationTargetException;
 public class DataTransferWizard extends Wizard implements IExportWizard {
 
     private static final String RS_EXPORT_WIZARD_DIALOG_SETTINGS = "DataTransfer";//$NON-NLS-1$
+    private static final String RS_IMPORT_WIZARD_DIALOG_SETTINGS = "ImportDataTransfer";//$NON-NLS-1$
 
     private DataTransferSettings settings;
-
+    private int transferStrategy = DataTransferStrategy.EXPORT;
+    
     public DataTransferWizard(@Nullable IDataTransferProducer[] producers, @Nullable IDataTransferConsumer[] consumers) {
-    		System.out.println("Wizard producers "+producers.length + "   consumers "+consumers.length);
-        this.settings = new DataTransferSettings(producers, consumers);
+    		this.settings = new DataTransferSettings(producers, consumers,transferStrategy);
         loadSettings();
     }
 
-    private void loadSettings()
-    {
-        IDialogSettings section = UIUtils.getDialogSettings(RS_EXPORT_WIZARD_DIALOG_SETTINGS);
+	public DataTransferWizard(@Nullable IDataTransferProducer[] producers, @Nullable IDataTransferConsumer[] consumers,
+			int transferStrategy) {
+		this.transferStrategy = transferStrategy;
+		this.settings = new DataTransferSettings(producers, consumers, transferStrategy);
+		loadSettings();
+	}
+    
+    private void loadSettings() {    
+    	     IDialogSettings section = null;
+    	    if(transferStrategy == DataTransferStrategy.EXPORT) {
+            section = UIUtils.getDialogSettings(RS_EXPORT_WIZARD_DIALOG_SETTINGS);
+    	    }
+    	    else if (transferStrategy == DataTransferStrategy.IMPORT) {
+    	    	 section = UIUtils.getDialogSettings(RS_IMPORT_WIZARD_DIALOG_SETTINGS);
+    	    }
         setDialogSettings(section);
 
         settings.loadFrom(DBeaverUI.getActiveWorkbenchWindow(), section);

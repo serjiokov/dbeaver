@@ -74,9 +74,12 @@ public class DataTransferSettings {
     private int maxJobCount = DEFAULT_THREADS_NUM;
 
     private transient int curPipeNum = 0;
+    
+    private int transferStrategy; 
 
-    public DataTransferSettings(@Nullable IDataTransferProducer[] producers, @Nullable IDataTransferConsumer[] consumers)
+    public DataTransferSettings(@Nullable IDataTransferProducer[] producers, @Nullable IDataTransferConsumer[] consumers, int transferStrategy)
     {
+    		this.transferStrategy = transferStrategy;
         dataPipes = new ArrayList<>();
         if (!ArrayUtils.isEmpty(producers) && !ArrayUtils.isEmpty(consumers)) {
             if (producers.length != consumers.length) {
@@ -120,10 +123,15 @@ public class DataTransferSettings {
         }
 
         Collection<Class<?>> objectTypes = getObjectTypes();
+        
         List<DataTransferNodeDescriptor> nodes = new ArrayList<>();
         DataTransferRegistry registry = DataTransferRegistry.getInstance();
+      
+        
+        
+        
         if (ArrayUtils.isEmpty(producers)) {
-            nodes.addAll(registry.getAvailableProducers(objectTypes));
+        	    nodes.addAll(registry.getAvailableProducers(objectTypes));
         } else {
             for (IDataTransferProducer source : producers) {
                 DataTransferNodeDescriptor node = registry.getNodeByType(source.getClass());
@@ -132,6 +140,9 @@ public class DataTransferSettings {
                 }
             }
         }
+     
+        
+        
         if (ArrayUtils.isEmpty(consumers)) {
             nodes.addAll(registry.getAvailableConsumers(objectTypes));
         } else {
@@ -204,6 +215,28 @@ public class DataTransferSettings {
         }
         return objectTypes;
     }
+    
+//    public Collection<Class<?>> getObjectTypesbyProducer() {
+//        List<DataTransferPipe> dataPipes = getDataPipes();
+//        Set<Class<?>> objectTypes = new HashSet<>();
+//        for (DataTransferPipe transferPipe : dataPipes) {
+//            if (transferPipe.getProducer() != null) {
+//                objectTypes.add(transferPipe.getProducer().getSourceObject().getClass());
+//            }
+//        }
+//        return objectTypes;
+//    }
+//    
+//    public Collection<Class<?>> getObjectTypesbyConsumer() {
+//        List<DataTransferPipe> dataPipes = getDataPipes();
+//        Set<Class<?>> objectTypes = new HashSet<>();
+//        for (DataTransferPipe transferPipe : dataPipes) {
+//            if (transferPipe.getConsumer() != null) {
+//                objectTypes.add(transferPipe.getConsumer().getSourceObject().getClass());
+//            }
+//        }
+//        return objectTypes;
+//    }
 
     public IDataTransferSettings getNodeSettings(IWizardPage page)
     {
@@ -297,7 +330,14 @@ public class DataTransferSettings {
         for (DataTransferPipe pipe : dataPipes) {
             if (consumer != null) {
                 try {
-                    pipe.setConsumer((IDataTransferConsumer) consumer.createNode());
+                	    Object node = consumer.createNode();
+                	    if(node instanceof IDataTransferConsumer) {
+                	    	  pipe.setConsumer((IDataTransferConsumer) node);
+                	    }
+                	    else if (node instanceof IDataTransferProducer) {
+                	    	  pipe.setProducer((IDataTransferProducer) node);
+                	    }
+                    //pipe.setConsumer((IDataTransferConsumer) consumer.createNode());
                 } catch (DBException e) {
                     log.error(e);
                     pipe.setConsumer(null);
@@ -425,6 +465,10 @@ public class DataTransferSettings {
             }
         }
 
+    }
+    
+    public int getTransferStrategy() {
+    		return transferStrategy;
     }
 
 }

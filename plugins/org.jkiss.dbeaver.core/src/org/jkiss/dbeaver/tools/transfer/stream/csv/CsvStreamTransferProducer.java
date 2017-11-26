@@ -9,10 +9,15 @@ import org.jkiss.dbeaver.tools.transfer.IDataTransferConsumer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferProducer;
 import org.jkiss.dbeaver.tools.transfer.database.DatabaseProducerSettings;
 
-public class  CsvStreamTransferProducer implements IDataTransferProducer<DatabaseProducerSettings>{
+public class CsvStreamTransferProducer implements IDataTransferProducer<DatabaseProducerSettings>{
 
 	 @NotNull
-	 private CsvInputDataSource dataContainer;
+	private CsvInputDataSource dataContainer;
+	 
+	 
+	public CsvStreamTransferProducer() {
+	
+	}
 	 
 	public CsvStreamTransferProducer(@NotNull CsvInputDataSource dataContainer) {
 		this.dataContainer = dataContainer;

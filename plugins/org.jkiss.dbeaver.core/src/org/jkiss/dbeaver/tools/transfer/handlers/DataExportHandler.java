@@ -49,4 +49,8 @@ public class DataExportHandler extends DataTransferHandler implements IElementUp
         }
     }
 
+	@Override
+	protected int getTransferStrategy() {
+		return DataTransferStrategy.EXPORT;
+	}
 }

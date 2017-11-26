@@ -8,20 +8,22 @@ import org.jkiss.dbeaver.tools.transfer.wizard.DataTransferSettings;
 
 public class CsvDataTransferSettings  implements IDataTransferSettings {
 
+	private static final String DELIMITER = "delimiter";
 	@Override
 	public void loadSettings(IRunnableContext runnableContext, DataTransferSettings dataTransferSettings,
 			IDialogSettings dialogSettings) {
 		
-		if (dialogSettings.get("delimiter") != null) {
-			System.out.println();
+		
+		String delimiter = dialogSettings.get(DELIMITER);
+		if (delimiter != null) {
+			System.out.println("Delimiter: " + delimiter);
         }
 		
 	}
 
 	@Override
 	public void saveSettings(IDialogSettings dialogSettings) {
-		// TODO Auto-generated method stub
-		System.out.println();
+		 dialogSettings.put(DELIMITER, "1111");
 	}
 
 }

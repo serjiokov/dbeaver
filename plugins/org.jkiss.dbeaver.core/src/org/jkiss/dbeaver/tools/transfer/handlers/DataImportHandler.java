@@ -87,5 +87,10 @@ public class DataImportHandler extends DataTransferHandler implements IElementUp
             element.setText("Import " + node.getNodeType() + " Data");
         }
     }
+    
+    @Override
+    protected int getTransferStrategy() {
+    	 return DataTransferStrategy.IMPORT;
+    }
 
 }
