@@ -85,10 +85,10 @@ public class DataTransferWizard extends Wizard implements IExportWizard {
         super.addPages();
         
         if (settings.isConsumerOptional()) {
-            addPage(new DataTransferPagePipes(true));
+            addPage(new DataTransferPagePipes(DataTransferStrategy.EXPORT));
         }
         else {
-        	    addPage(new DataTransferPagePipes(false));
+        	    addPage(new DataTransferPagePipes(DataTransferStrategy.IMPORT));
         }
         
         

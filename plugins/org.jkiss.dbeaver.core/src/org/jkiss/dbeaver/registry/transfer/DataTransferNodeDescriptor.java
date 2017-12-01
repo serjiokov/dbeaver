@@ -75,7 +75,8 @@ public class DataTransferNodeDescriptor extends AbstractDescriptor
         for (IConfigurationElement typeCfg : ArrayUtils.safeArray(config.getChildren(RegistryConstants.ATTR_SOURCE_TYPE))) {
             sourceTypes.add(new ObjectType(typeCfg.getAttribute(RegistryConstants.ATTR_TYPE)));
         }
-        for (IConfigurationElement pageConfig : ArrayUtils.safeArray(config.getChildren(RegistryConstants.TAG_PAGE))) {
+        IConfigurationElement[] children = config.getChildren(RegistryConstants.TAG_PAGE);
+		for (IConfigurationElement pageConfig : ArrayUtils.safeArray(children)) {
             pageTypes.add(new ObjectType(pageConfig.getAttribute(RegistryConstants.ATTR_CLASS)));
         }
         for (IConfigurationElement processorConfig : ArrayUtils.safeArray(config.getChildren(RegistryConstants.TAG_PROCESSOR))) {

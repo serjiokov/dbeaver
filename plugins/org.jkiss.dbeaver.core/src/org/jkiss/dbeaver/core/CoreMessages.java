@@ -1290,6 +1290,8 @@ public class CoreMessages extends NLS {
 	public static String sql_editor_resultset_filter_panel_control_execute_to_see_reslut;
 	// SQL editor resultset filter panel
 	
+	public static String import_csv_dialog_btn_select_file;
+	public static String import_csv_dialog_lbl_select_file;
 	
 	
 	static {

@@ -146,15 +146,10 @@ public class DataTransferSettings {
         if (ArrayUtils.isEmpty(consumers)) {
             nodes.addAll(registry.getAvailableConsumers(objectTypes));
         } else {
-            for (IDataTransferConsumer target : consumers) {
-                //DataTransferNodeDescriptor node = registry.getNodeByType(target.getClass());
-            	List<DataTransferNodeDescriptor> lstProducers = registry.getProducersNodes();
-            	nodes.addAll(lstProducers);
-//                if (node != null && !nodes.contains(node)) {
-//                    nodes.add(node);
-//                    this.consumer = node;
-//                }
-            }
+			for (IDataTransferConsumer target : consumers) {
+				List<DataTransferNodeDescriptor> lstProducers = registry.getProducersNodes();
+				nodes.addAll(lstProducers);
+			}
         }
         for (DataTransferNodeDescriptor node : nodes) {
             addNodeSettings(node);
@@ -209,8 +204,9 @@ public class DataTransferSettings {
         List<DataTransferPipe> dataPipes = getDataPipes();
         Set<Class<?>> objectTypes = new HashSet<>();
         for (DataTransferPipe transferPipe : dataPipes) {
-            if (transferPipe.getProducer() != null) {
-                objectTypes.add(transferPipe.getProducer().getSourceObject().getClass());
+            IDataTransferProducer trProducer = transferPipe.getProducer();
+			if (trProducer != null && trProducer.getSourceObject() !=null) {
+               objectTypes.add(trProducer.getSourceObject().getClass());
             }
         }
         return objectTypes;

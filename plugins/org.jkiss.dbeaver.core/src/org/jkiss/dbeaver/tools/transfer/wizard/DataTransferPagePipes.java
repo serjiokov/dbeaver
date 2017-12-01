@@ -29,6 +29,7 @@ import org.jkiss.dbeaver.core.CoreMessages;
 import org.jkiss.dbeaver.registry.transfer.DataTransferNodeDescriptor;
 import org.jkiss.dbeaver.registry.transfer.DataTransferProcessorDescriptor;
 import org.jkiss.dbeaver.registry.transfer.DataTransferRegistry;
+import org.jkiss.dbeaver.tools.transfer.handlers.DataTransferStrategy;
 import org.jkiss.dbeaver.ui.DBeaverIcons;
 import org.jkiss.dbeaver.ui.UIUtils;
 import org.jkiss.dbeaver.ui.dialogs.ActiveWizardPage;
@@ -41,7 +42,7 @@ import java.util.List;
 class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
 
     private TableViewer consumersTable;
-    private boolean loadConsumesStrategy = true;
+    private int loadStrategy = DataTransferStrategy.EXPORT;
 
     private static class TransferTarget {
         DataTransferNodeDescriptor consumer;
@@ -54,12 +55,12 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
         }
     }
 
-    DataTransferPagePipes(boolean loadConsumesStrategy) {
+    DataTransferPagePipes(int loadStrategy) {
         super(CoreMessages.data_transfer_wizard_init_name);
         setTitle(CoreMessages.data_transfer_wizard_init_title);
         setDescription(CoreMessages.data_transfer_wizard_init_description);
         setPageComplete(false);
-        this.loadConsumesStrategy = loadConsumesStrategy;
+        this.loadStrategy = loadStrategy;
     }
 
     @Override
@@ -123,7 +124,7 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
             columnDesc.setLabelProvider(labelProvider);
             columnDesc.getColumn().setText(CoreMessages.data_transfer_wizard_init_column_description);
         }
-        if(loadConsumesStrategy) {
+        if(loadStrategy == DataTransferStrategy.EXPORT) {
         		loadConsumers();
         		consumersTable.getTable().addSelectionListener(new SelectionListener() {
                     @Override
@@ -154,7 +155,7 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
                     }
                 });
         }
-        else {
+        else if (loadStrategy == DataTransferStrategy.IMPORT){
         		loadProducers();
         		consumersTable.getTable().addSelectionListener(new SelectionListener() {
                     @Override
@@ -198,7 +199,7 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
         });
         setControl(composite);
 
-		if (loadConsumesStrategy) {
+		if (loadStrategy == DataTransferStrategy.EXPORT) {
 			DataTransferNodeDescriptor consumer = getWizard().getSettings().getConsumer();
 			DataTransferProcessorDescriptor processor = getWizard().getSettings().getProcessor();
 			if (consumer != null) {
@@ -211,7 +212,7 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
 				}
 			}
 		}
-		else {
+		else if (loadStrategy == DataTransferStrategy.IMPORT){
 			DataTransferNodeDescriptor producers = getWizard().getSettings().getProducer();
 			DataTransferProcessorDescriptor processor = getWizard().getSettings().getProcessor();
 			
