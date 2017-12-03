@@ -113,7 +113,7 @@ public class DataTransferSettings {
             Class<? extends IDataTransferConsumer> consumerType = dataPipes.get(0).getConsumer().getClass();
             DataTransferNodeDescriptor consumerDesc = DataTransferRegistry.getInstance().getNodeByType(consumerType);
             if (consumerDesc != null) {
-                selectConsumer(consumerDesc, null);
+                selectConsumer(consumerDesc);
                 consumerOptional = false;
             } else {
                 DBUserInterface.getInstance().showError("Can't find producer", "Can't find data propducer descriptor in registry");
@@ -312,37 +312,64 @@ public class DataTransferSettings {
     {
         this.producer = producer;
     }
-
-    void selectConsumer(DataTransferNodeDescriptor consumer, DataTransferProcessorDescriptor processor)
+    
+    private void selectConsumer(DataTransferNodeDescriptor consumer)
     {
         this.consumer = consumer;
-        this.processor = processor;
-        if (consumer != null && processor != null) {
-            if (!processorPropsHistory.containsKey(processor)) {
-                processorPropsHistory.put(processor, new HashMap<>());
-            }
-        }
-        // Configure pipes
-        for (DataTransferPipe pipe : dataPipes) {
-            if (consumer != null) {
-                try {
-                	    Object node = consumer.createNode();
-                	    if(node instanceof IDataTransferConsumer) {
-                	    	  pipe.setConsumer((IDataTransferConsumer) node);
-                	    }
-                	    else if (node instanceof IDataTransferProducer) {
-                	    	  pipe.setProducer((IDataTransferProducer) node);
-                	    }
-                    //pipe.setConsumer((IDataTransferConsumer) consumer.createNode());
-                } catch (DBException e) {
-                    log.error(e);
-                    pipe.setConsumer(null);
-                }
-            } else {
-                pipe.setConsumer(null);
-            }
-        }
     }
+
+	void selectConsumer(DataTransferNodeDescriptor consumer, DataTransferProcessorDescriptor processor) {
+		this.consumer = consumer;
+		this.processor = processor;
+		if (consumer != null && processor != null) {
+			if (!processorPropsHistory.containsKey(processor)) {
+				processorPropsHistory.put(processor, new HashMap<>());
+			}
+		}
+		// Configure pipes
+		for (DataTransferPipe pipe : dataPipes) {
+			if (consumer != null) {
+				try {
+					Object node = consumer.createNode();
+					if (node instanceof IDataTransferConsumer) {
+						pipe.setConsumer((IDataTransferConsumer) node);
+					}
+
+				} catch (DBException e) {
+					log.error(e);
+					pipe.setConsumer(null);
+				}
+			} else {
+				pipe.setConsumer(null);
+			}
+		}
+	}
+    
+	void selectProducer(DataTransferNodeDescriptor producer, DataTransferProcessorDescriptor processor) {
+		this.producer = producer;
+		this.processor = processor;
+		if (producer != null && processor != null) {
+			if (!processorPropsHistory.containsKey(processor)) {
+				processorPropsHistory.put(processor, new HashMap<>());
+			}
+		}
+		// Configure pipes
+		for (DataTransferPipe pipe : dataPipes) {
+			if (producer != null) {
+				try {
+					Object node = producer.createNode();
+					if (node instanceof IDataTransferProducer) {
+						pipe.setProducer((IDataTransferProducer) node);
+					}
+				} catch (DBException e) {
+					log.error(e);
+					pipe.setProducer(null);
+				}
+			} else {
+				pipe.setProducer(null);
+			}
+		}
+	}
 
     public int getMaxJobCount()
     {

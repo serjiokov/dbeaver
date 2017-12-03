@@ -60,7 +60,8 @@ public class DataImportHandler extends DataTransferHandler implements IElementUp
     	System.out.println( "--- Choose Produser ---");
     	System.out.println(event.toString());
     	
-//        final DBNModel navigatorModel = DBeaverCore.getInstance().getNavigatorModel();
+       final DBNModel navigatorModel = DBeaverCore.getInstance().getNavigatorModel();
+       
 //        final DBNNode rootNode = DBeaverCore.getInstance().getLiveProjects().size() == 1 ?
 //            navigatorModel.getRoot().getProject(DBeaverCore.getInstance().getProjectRegistry().getActiveProject()) : navigatorModel.getRoot();
 //        DBNNode node = BrowseObjectDialog.selectObject(

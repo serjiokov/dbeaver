@@ -29,10 +29,12 @@ import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.core.CoreMessages;
 import org.jkiss.dbeaver.model.DBPEvaluationContext;
 import org.jkiss.dbeaver.model.DBUtils;
+import org.jkiss.dbeaver.registry.transfer.DataTransferNodeDescriptor;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferNode;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferProcessor;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferSettings;
 import org.jkiss.dbeaver.tools.transfer.handlers.DataTransferStrategy;
+import org.jkiss.dbeaver.tools.transfer.stream.csv.CsvDataTransferSettings;
 import org.jkiss.dbeaver.ui.DBeaverIcons;
 import org.jkiss.dbeaver.ui.UIUtils;
 import org.jkiss.dbeaver.ui.dialogs.ActiveWizardPage;
@@ -95,7 +97,7 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
         		else if (settings.getTransferStrategy() == DataTransferStrategy.IMPORT) {
         			typeObject = pipe.getProducer();
         		}
-            IDataTransferSettings consumerSettings = settings.getNodeSettings(typeObject);
+            IDataTransferSettings implSettings = settings.getNodeSettings(typeObject);
             IDataTransferProcessor processor = null;
             if (settings.getProcessor() != null) {
                 // Processor is optional
@@ -107,38 +109,46 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
                 }
             }
           
+			DataTransferNodeDescriptor producer = settings.getProducer();
+			
+			DataTransferNodeDescriptor consumerDescr = settings.getConsumer();
 			if (settings.getTransferStrategy() == DataTransferStrategy.EXPORT) {
-				pipe.getConsumer().initTransfer(pipe.getProducer().getSourceObject(), consumerSettings, processor,
+			
+				pipe.getConsumer().initTransfer(pipe.getProducer().getSourceObject(), implSettings, processor,
 						processor == null ? null : settings.getProcessorProperties());
+				
 				TableItem item = new TableItem(resultTable, SWT.NONE);
 				item.setText(0,
 						DBUtils.getObjectFullName(pipe.getProducer().getSourceObject(), DBPEvaluationContext.UI));
-				if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
-					item.setImage(0, DBeaverIcons.getImage(settings.getProducer().getIcon()));
+				if (producer != null && producer.getIcon() != null) {
+					item.setImage(0, DBeaverIcons.getImage(producer.getIcon()));
 				}
 				item.setText(1, pipe.getConsumer().getTargetName());
 				if (settings.getProcessor() != null && settings.getProcessor().getIcon() != null) {
 					item.setImage(1, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
-				} else if (settings.getConsumer() != null && settings.getConsumer().getIcon() != null) {
-					item.setImage(1, DBeaverIcons.getImage(settings.getConsumer().getIcon()));
+				} else if (consumerDescr != null && consumerDescr.getIcon() != null) {
+					item.setImage(1, DBeaverIcons.getImage(consumerDescr.getIcon()));
 				}
 			}
 			else if (settings.getTransferStrategy() == DataTransferStrategy.IMPORT) {
 				
+				
 				TableItem item = new TableItem(resultTable, SWT.NONE);
-	           // item.setText(0, DBUtils.getObjectFullName(pipe.getProducer().getSourceObject(), DBPEvaluationContext.UI));
-	            if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
-	                item.setImage(0, DBeaverIcons.getImage(settings.getProducer().getIcon()));
+				if(pipe.getConsumer()!=null) {
+					item.setImage(1, DBeaverIcons.getImage(consumerDescr.getIcon()));
+					String msg = String.format("%s %s",consumerDescr.getName(), pipe.getConsumer().getTargetName());
+					item.setText(1,msg);
+				}
+		        if (producer != null && producer.getIcon() != null) {
+	                if(implSettings instanceof CsvDataTransferSettings) {
+	                  item.setText(0, ((CsvDataTransferSettings)implSettings).getFile().getName());
+	                }
 	            }
-	            //item.setText(1, pipe.getConsumer().getTargetName());
+	            
 	            if (settings.getProcessor() != null && settings.getProcessor().getIcon() != null) {
-	                item.setImage(1, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
+	                item.setImage(0, DBeaverIcons.getImage(settings.getProcessor().getIcon()));
 	            } 
-//	            else if (settings.getProducer() != null && settings.getProducer().getIcon() != null) {
-//	                item.setImage(1, DBeaverIcons.getImage(settings.getProducer().getIcon()));
-//	            }
 			}
-            
         }
         activated = true;
         UIUtils.packColumns(resultTable, true);

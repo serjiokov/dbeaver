@@ -1,5 +1,9 @@
 package org.jkiss.dbeaver.tools.transfer.stream.csv;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,6 +28,7 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 	private PropertyTreeViewer propsEditor;
 	private PropertySourceCustom propertySource;
 	private Text txtFilelocation;
+	private IStatus statusState = Status.OK_STATUS;
 	
 
 	public CsvProviderPageSettings() {
@@ -75,8 +80,10 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 				FileDialog fileDlg = new FileDialog(Display.getDefault().getActiveShell(), SWT.OPEN);
 				fileDlg.setText("Open");
 				fileDlg.setFilterExtensions(new String[] { "*.csv", "*.*" });
-				setFileLocation(fileDlg.open());
+				statusState =  setFileLocation(fileDlg.open());
 				updatePageCompletion();
+				
+				
 
 			}
 		});
@@ -92,18 +99,28 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 
 	}
 
-	private void setFileLocation(String location) {
+	private IStatus setFileLocation(String location) {
 		CsvDataTransferSettings settings = getWizard().getPageSettings(this, CsvDataTransferSettings.class);
 		
 		if(location==null) {
 			txtFilelocation.setText("");
-			settings.setFileLocation("");
-			return;
+			return new Status(IStatus.ERROR, "org.jkiss.dbeaver.tools.transfer.stream.csv", "Empty location");
 		}
-		if (txtFilelocation != null && !txtFilelocation.isDisposed()) {
-			txtFilelocation.setText(location);
-			settings.setFileLocation(location);
+		
+		File fileImport = new File(location);
+		if(!fileImport.exists()) {
+			return new Status(IStatus.ERROR, "org.jkiss.dbeaver.tools.transfer.stream.csv", "File doesn't exist");
 		}
+		
+		
+		if (txtFilelocation == null && txtFilelocation.isDisposed()) {
+			return new Status(IStatus.ERROR, "org.jkiss.dbeaver.tools.transfer.stream.csv", "Widget is disposed");	
+		}
+		
+		settings.setFileLocation(fileImport);
+	    txtFilelocation.setText(settings.getFile().getAbsolutePath());
+	     
+	    return Status.OK_STATUS;
 	}
 
 	@Override
@@ -119,9 +136,10 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 
 	@Override
 	protected boolean determinePageCompletion() {
-		CsvDataTransferSettings settings = getWizard().getPageSettings(this, CsvDataTransferSettings.class);
-		if (!settings.getFileLocation().isEmpty()) {
+		if (statusState.isOK()) {
 			return true;
+		}else {
+			// need's log statusState // Let communicate guys
 		}
 		return false;
 	}

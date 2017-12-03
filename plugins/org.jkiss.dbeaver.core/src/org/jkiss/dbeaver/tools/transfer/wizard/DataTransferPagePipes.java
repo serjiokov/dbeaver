@@ -169,9 +169,9 @@ class DataTransferPagePipes extends ActiveWizardPage<DataTransferWizard> {
                             target = null;
                         }
                         if (target == null) {
-                            getWizard().getSettings().selectConsumer(null, null);
+                            getWizard().getSettings().selectProducer(null, null);
                         } else {
-                            getWizard().getSettings().selectConsumer(target.consumer, target.processor);
+                            getWizard().getSettings().selectProducer(target.consumer, target.processor);
                         }
                         updatePageCompletion();
                     }

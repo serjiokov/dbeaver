@@ -32,6 +32,8 @@ public class CsvStreamTransferProducer implements IDataTransferProducer<Database
 	@Override
 	public void transferData(DBRProgressMonitor monitor, IDataTransferConsumer consumer,
 			DatabaseProducerSettings settings) throws DBException {
+		
+		
 	}
 
 	public String toString() {
