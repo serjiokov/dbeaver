@@ -32,6 +32,7 @@ import org.jkiss.dbeaver.tools.transfer.IDataTransferConsumer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferNode;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferProducer;
 import org.jkiss.dbeaver.tools.transfer.IDataTransferSettings;
+import org.jkiss.dbeaver.tools.transfer.handlers.DataTransferStrategy;
 import org.jkiss.utils.ArrayUtils;
 import org.jkiss.utils.CommonUtils;
 
@@ -126,9 +127,6 @@ public class DataTransferSettings {
         
         List<DataTransferNodeDescriptor> nodes = new ArrayList<>();
         DataTransferRegistry registry = DataTransferRegistry.getInstance();
-      
-        
-        
         
         if (ArrayUtils.isEmpty(producers)) {
         	    nodes.addAll(registry.getAvailableProducers(objectTypes));
@@ -140,8 +138,6 @@ public class DataTransferSettings {
                 }
             }
         }
-     
-        
         
         if (ArrayUtils.isEmpty(consumers)) {
             nodes.addAll(registry.getAvailableConsumers(objectTypes));
@@ -151,9 +147,18 @@ public class DataTransferSettings {
 				nodes.addAll(lstProducers);
 			}
         }
+        
         for (DataTransferNodeDescriptor node : nodes) {
             addNodeSettings(node);
         }
+        
+        // for Import add page for consumer for mapping data
+        
+        if(transferStrategy == DataTransferStrategy.IMPORT) {
+        		addNodeSettings(consumer);
+        }
+        
+        
     }
 
     private void addNodeSettings(DataTransferNodeDescriptor node)

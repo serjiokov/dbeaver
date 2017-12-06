@@ -104,17 +104,15 @@ public class DataTransferJob extends AbstractJob {
 
         IDataTransferSettings consumerSettings = settings.getNodeSettings(consumer);
 
-        setName(NLS.bind(CoreMessages.data_transfer_wizard_job_container_name,
-            CommonUtils.truncateString(producer.getSourceObject().getName(), 200)));
+        // SK Uncomment please
+        //setName(NLS.bind(CoreMessages.data_transfer_wizard_job_container_name,
+        //    CommonUtils.truncateString(producer.getSourceObject().getName(), 200)));
 
         IDataTransferSettings nodeSettings = settings.getNodeSettings(producer);
         try {
             //consumer.initTransfer(producer.getSourceObject(), consumerSettings, );
 
-            producer.transferData(
-                monitor,
-                consumer,
-                nodeSettings);
+			producer.transferData(monitor, consumer, nodeSettings);
             consumer.finishTransfer(monitor, false);
             return true;
         } catch (Exception e) {

@@ -183,31 +183,37 @@ public class DataTransferWizard extends Wizard implements IExportWizard {
         // Save settings
         getSettings().saveTo(getDialogSettings());
 
-        // Start consumers
-        try {
-            DBeaverUI.run(getContainer(), true, true, new DBRRunnableWithProgress() {
-                @Override
-                public void run(DBRProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        for (DataTransferPipe pipe : settings.getDataPipes()) {
-                            pipe.getConsumer().startTransfer(monitor);
-                        }
-                    } catch (DBException e) {
-                        throw new InvocationTargetException(e);
-                    }
-                }
-            });
-        } catch (InvocationTargetException e) {
-            DBUserInterface.getInstance().showError("Transfer init failed", "Can't start data transfer", e.getTargetException());
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        }
+	
+			// Start 
+			try {
+				DBeaverUI.run(getContainer(), true, true, new DBRRunnableWithProgress() {
+					@Override
+					public void run(DBRProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						try {
+							for (DataTransferPipe pipe : settings.getDataPipes()) {
+								if (transferStrategy == DataTransferStrategy.EXPORT) {
+								    pipe.getConsumer().startTransfer(monitor);
+								} else if(transferStrategy == DataTransferStrategy.IMPORT) {
+									//pipe.getProducer().
+								}
+								
+							}
+						} catch (DBException e) {
+							throw new InvocationTargetException(e);
+						}
+					}
+				});
+			} catch (InvocationTargetException e) {
+				DBUserInterface.getInstance().showError("Transfer init failed", "Can't start data transfer",
+						e.getTargetException());
+				return false;
+			} catch (InterruptedException e) {
+				return false;
+			}
 
-        // Run export jobs
-        executeJobs();
-
-        // Done
+			// Run export jobs
+			executeJobs();
+	    // Done
         return true;
     }
 

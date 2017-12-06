@@ -136,7 +136,7 @@ class DataTransferPageFinal extends ActiveWizardPage<DataTransferWizard> {
 				TableItem item = new TableItem(resultTable, SWT.NONE);
 				if(pipe.getConsumer()!=null) {
 					item.setImage(1, DBeaverIcons.getImage(consumerDescr.getIcon()));
-					String msg = String.format("%s %s",consumerDescr.getName(), pipe.getConsumer().getTargetName());
+					String msg = String.format("%s: %s",consumerDescr.getName(), pipe.getConsumer().getTargetName());
 					item.setText(1,msg);
 				}
 		        if (producer != null && producer.getIcon() != null) {

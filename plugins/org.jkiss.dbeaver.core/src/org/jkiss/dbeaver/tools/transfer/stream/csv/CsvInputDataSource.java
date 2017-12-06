@@ -51,7 +51,9 @@ public class CsvInputDataSource  implements DBSDataContainer{
 	@Override
 	public DBCStatistics readData(DBCExecutionSource source, DBCSession session, DBDDataReceiver dataReceiver,
 			DBDDataFilter dataFilter, long firstRow, long maxRows, long flags) throws DBCException {
-		// TODO Auto-generated method stub
+		
+
+		
 		return null;
 	}
 

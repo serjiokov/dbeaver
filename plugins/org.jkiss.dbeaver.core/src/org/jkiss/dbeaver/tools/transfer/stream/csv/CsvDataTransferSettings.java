@@ -10,15 +10,18 @@ import org.jkiss.dbeaver.tools.transfer.wizard.DataTransferSettings;
 public class CsvDataTransferSettings implements IDataTransferSettings {
 
 	private static final String DELIMITER = "delimiter";
+	private String delimiter;
 	private File fileImport = null;
+
+	public CsvDataTransferSettings() {
+	}
 
 	@Override
 	public void loadSettings(IRunnableContext runnableContext, DataTransferSettings dataTransferSettings,
 			IDialogSettings dialogSettings) {
 
-		String delimiter = dialogSettings.get(DELIMITER);
-		if (delimiter != null) {
-		}
+		delimiter = dialogSettings.get(DELIMITER);
+
 	}
 
 	@Override
@@ -32,6 +35,17 @@ public class CsvDataTransferSettings implements IDataTransferSettings {
 
 	public void setFileLocation(File file) {
 		this.fileImport = file;
+	}
+
+	public String getEncoding() {
+		return "UTF8";
+	}
+
+	public char getDelimetr() {
+		if(delimiter==null) {
+			return ',';
+		}
+		return delimiter.toCharArray()[0];
 	}
 
 }
