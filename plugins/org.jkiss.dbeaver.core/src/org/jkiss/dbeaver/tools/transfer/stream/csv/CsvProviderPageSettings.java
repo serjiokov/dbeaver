@@ -29,7 +29,7 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 	private PropertySourceCustom propertySource;
 	private Text txtFilelocation;
 	private IStatus statusState = Status.CANCEL_STATUS;
-	private CsvDataParser dataParser;
+	
 	CsvDataTransferSettings settings;
 
 	public CsvProviderPageSettings() {
@@ -37,7 +37,7 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 		setTitle(CoreMessages.data_transfer_wizard_settings_title);
 		setDescription(CoreMessages.data_transfer_wizard_settings_description_import);
 		setPageComplete(false);
-		dataParser = new CsvDataParser();
+
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 				fileDlg.setText("Open");
 				fileDlg.setFilterExtensions(new String[] { "*.csv", "*.*" });
 				statusState = setFileLocation(fileDlg.open());
-				if(!statusState.isOK()) {
+				if (!statusState.isOK()) {
 					setErrorMessage(statusState.getMessage());
 				}
 				updatePageCompletion();
@@ -99,7 +99,6 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 		setControl(composite);
 
 	}
-	
 
 	private IStatus setFileLocation(String location) {
 		if (location == null) {
@@ -136,9 +135,8 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 	@Override
 	protected boolean determinePageCompletion() {
 		if (statusState.isOK()) {
-			dataParser.init(settings.getFile(), settings.getDelimetr(), settings.getEncoding());
-			statusState = dataParser.parseCsvFile();
-			if(!statusState.isOK()) {
+			statusState = settings.parseCsvFile();
+			if (!statusState.isOK()) {
 				setErrorMessage(statusState.getMessage());
 			}
 		}
