@@ -41,11 +41,11 @@ public class CsvDataTransferSettings implements IDataTransferSettings {
 		return "UTF8";
 	}
 
-	public char getDelimetr() {
+	public String getDelimetr() {
 		if(delimiter==null) {
-			return ',';
+			return ",";
 		}
-		return delimiter.toCharArray()[0];
+		return delimiter;
 	}
 
 }

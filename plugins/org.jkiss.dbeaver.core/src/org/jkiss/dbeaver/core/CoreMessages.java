@@ -443,6 +443,9 @@ public class CoreMessages extends NLS {
 	public static String data_transfer_wizard_settings_listbox_formatting_item_default;
 	public static String data_transfer_wizard_settings_name;
 	public static String data_transfer_wizard_settings_title;
+	public static String  data_transfer_wizard_settings_description_import;
+	public static String  data_transfer_wizard_settings_group_importer;
+
 	
 	public static String dialog_filter_button_add;
 	public static String dialog_filter_button_enable;
