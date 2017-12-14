@@ -136,6 +136,7 @@ public class CsvProviderPageSettings extends ActiveWizardPage<DataTransferWizard
 	protected boolean determinePageCompletion() {
 		if (statusState.isOK()) {
 			statusState = settings.parseCsvFile();
+			
 			if (!statusState.isOK()) {
 				setErrorMessage(statusState.getMessage());
 			}

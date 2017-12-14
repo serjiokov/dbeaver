@@ -16,9 +16,7 @@ public class CsvStreamTransferProducer implements IDataTransferProducer<CsvDataT
 	@NotNull
 	private CsvInputDataSource dataContainer;
 
-	private char quoteChar = '"';
-	private char delimiter;
-
+	
 	public CsvStreamTransferProducer() {
 	}
 
@@ -28,6 +26,7 @@ public class CsvStreamTransferProducer implements IDataTransferProducer<CsvDataT
 
 	@Override
 	public DBSObject getSourceObject() {
+		
 		return dataContainer;
 	}
 
